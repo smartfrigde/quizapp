@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - Quiz App</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="create-container">
+        <div class="create-header">
+            <h1 class="create-title">Create a Quiz</h1>
+            <p class="create-subtitle">Build your own quiz with custom questions</p>
+        </div>
+
+        <div class="quiz-info">
+            <div class="input-group">
+                <label for="quizTitle">Quiz Title</label>
+                <input type="text" id="quizTitle" placeholder="Enter quiz title..." maxlength="100">
+            </div>
+            <div class="input-group">
+                <label for="quizDescription">Description (optional)</label>
+                <textarea id="quizDescription" placeholder="Brief description of your quiz..." rows="2" maxlength="200"></textarea>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-header">
+                <h2>Questions</h2>
+                <span class="question-count">Question <span id="currentQuestionNum">1</span> of <span id="totalQuestions">1</span></span>
+            </div>
+
+            <div class="question-form" id="questionForm">
+                <div class="input-group">
+                    <label for="questionText">Question</label>
+                    <textarea id="questionText" placeholder="Enter your question..." rows="3" maxlength="300"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Answer Options</label>
+                    <div class="options-container" id="optionsContainer">
+                        <div class="option-input">
+                            <input type="text" placeholder="Option A" maxlength="100">
+                            <input type="radio" name="correctAnswer" value="0" title="Mark as correct answer">
+                        </div>
+                        <div class="option-input">
+                            <input type="text" placeholder="Option B" maxlength="100">
+                            <input type="radio" name="correctAnswer" value="1" title="Mark as correct answer">
+                        </div>
+                        <div class="option-input">
+                            <input type="text" placeholder="Option C" maxlength="100">
+                            <input type="radio" name="correctAnswer" value="2" title="Mark as correct answer">
+                        </div>
+                        <div class="option-input">
+                            <input type="text" placeholder="Option D" maxlength="100">
+                            <input type="radio" name="correctAnswer" value="3" title="Mark as correct answer">
+                        </div>
+                    </div>
+                    <p class="hint">Click the radio button next to the correct answer</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="questionImage">Image URL (optional)</label>
+                    <input type="url" id="questionImage" placeholder="https://example.com/image.jpg">
+                </div>
+            </div>
+        </div>
+
+        <div class="question-navigation">
+            <button class="nav-btn secondary" id="prevQuestion" disabled>← Previous</button>
+            <button class="nav-btn primary" id="addQuestion">Add New Question</button>
+            <button class="nav-btn secondary" id="nextQuestion" disabled>Next →</button>
+        </div>
+
+        <div class="question-list">
+            <h3>Questions Overview</h3>
+            <div class="questions-preview" id="questionsPreview">
+                <div class="question-item active" data-index="0">
+                    <span class="question-number">1</span>
+                    <span class="question-preview">New question...</span>
+                    <button class="delete-question" title="Delete question">×</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="create-actions">
+            <button class="action-btn secondary" id="backToMenu">← Back to Menu</button>
+            <button class="action-btn primary" id="saveQuiz">Save Quiz</button>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
