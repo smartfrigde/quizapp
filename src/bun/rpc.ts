@@ -1,7 +1,7 @@
 import { RPCType } from "../types/rpc";
 import { BrowserView } from "electrobun/bun";
 import { Utils } from "electrobun/bun";
-import { join } from "path";
+import path, { join } from "path";
 import { homedir } from "os";
 import { QuizResults, QuizAttempt, Quiz, QuizAnswerKey, ProcessedAttempt, PlayerAnswer } from "../types/questions";
 
@@ -176,8 +176,27 @@ export const webviewRPC = BrowserView.defineRPC<RPCType>({
 
         return { success: true };
       },
-    },
 
+      saveQuizFiles: async ({ quiz, answerKey }) => {
+        const chosenPaths = await Utils.openFileDialog({
+          startingFolder: join(homedir(), "Desktop"),
+          allowedFileTypes: "json",
+          canChooseFiles: false,
+          canChooseDirectory: true,
+          allowsMultipleSelection: false,
+        });
+        const chosenPath = chosenPaths[0];
+        if (!chosenPath) {
+          throw new Error("No folder chosen for saving quiz");
+        }
+        console.log(quiz, answerKey);
+        const parsedQuiz: Quiz = typeof quiz === "string" ? JSON.parse(quiz) : quiz;
+        const parsedAnswerKey: QuizAnswerKey = typeof answerKey === "string" ? JSON.parse(answerKey) : answerKey;
+        await Bun.write(path.join(chosenPath, `${parsedQuiz.name.replace(/[^a-z0-9]/gi, '_')}.quiz`), JSON.stringify(parsedQuiz, null, 2));
+        await Bun.write(path.join(chosenPath, `${parsedQuiz.name.replace(/[^a-z0-9]/gi, '_')}_answers.json`), JSON.stringify(parsedAnswerKey, null, 2));
+        return { success: true };
+      },
+    },
     messages: {},
   },
 });

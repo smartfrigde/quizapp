@@ -13,6 +13,10 @@ export default {
             checkview: {
                 entrypoint: "src/checkview/index.ts",
                 external: [],
+            },
+            createview: {
+                entrypoint: "src/createview/index.ts",
+                external: [],
             }
         },
         copy: {
@@ -25,7 +29,6 @@ export default {
             "src/menuview/index.js": "views/menuview/index.js",
             "src/createview/index.html": "views/createview/index.html",
             "src/createview/index.css": "views/createview/index.css",
-            "src/createview/index.js": "views/createview/index.js",
         },
         mac: {
             bundleCEF: true,

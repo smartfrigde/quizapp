@@ -4,6 +4,7 @@ import { webviewRPC } from "./rpc";
 const mainWindow = new BrowserWindow({
   title: "Quiz app",
   url: "views://menuview/index.html",
+  renderer: "cef",
   frame: {
     width: 800,
     height: 800,

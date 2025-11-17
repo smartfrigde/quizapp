@@ -1,4 +1,11 @@
-
+import Electrobun, { Electroview } from "electrobun/view";
+import { RPCType } from "../types/rpc";
+const rpc = Electroview.defineRPC<RPCType>({
+  maxRequestTime: 60000,
+  handlers: {
+    requests: {}
+  }
+});
 class QuizCreator {
     constructor() {
         this.questions = [];
@@ -27,9 +34,9 @@ class QuizCreator {
         this.totalQuestions = document.getElementById('totalQuestions');
         this.questionsPreview = document.getElementById('questionsPreview');
         
-        // Action buttons
-        this.backToMenu = document.getElementById('backToMenu');
-        this.saveQuiz = document.getElementById('saveQuiz');
+        // Action buttons - renamed to avoid conflicts
+        this.backToMenuBtn = document.getElementById('backToMenu');
+        this.saveQuizBtn = document.getElementById('saveQuiz');
     }
 
     addEventListeners() {
@@ -54,9 +61,9 @@ class QuizCreator {
             radio.addEventListener('change', () => this.saveCurrentQuestion());
         });
         
-        // Actions
-        this.backToMenu.addEventListener('click', () => this.goBackToMenu());
-        this.saveQuiz.addEventListener('click', () => this.saveQuiz());
+        // Actions - using renamed properties
+        this.backToMenuBtn.addEventListener('click', () => this.goBackToMenu());
+        this.saveQuizBtn.addEventListener('click', () => this.saveQuiz());
         
         // Auto-save on any input
         document.addEventListener('input', () => this.updateQuestionPreview());
@@ -225,12 +232,11 @@ class QuizCreator {
     goBackToMenu() {
         if (confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
             console.log('Navigating back to menu...');
-            // TODO: Navigate back to menu view
-            // window.location.href = '../menuview/index.html';
+            window.location.href = 'views://menuview/index.html';
         }
     }
 
-    saveQuiz() {
+    async saveQuiz() {
         this.saveCurrentQuestion();
         
         // Validate quiz
@@ -258,24 +264,59 @@ class QuizCreator {
             }
         }
         
-        // Prepare quiz data
+        // Generate unique ID for the quiz
+        const quizId = `quiz-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Prepare quiz data in .quiz format
         const quizData = {
-            title: this.quizTitle.value.trim(),
-            description: this.quizDescription.value.trim(),
-            questions: this.questions.map(q => ({
-                text: q.text.trim(),
-                options: q.options.filter(opt => opt.trim()),
-                correctAnswer: q.correctAnswer,
-                image: q.image.trim() || null
-            })),
+            id: quizId,
+            name: this.quizTitle.value.trim(),
+            description: this.quizDescription.value.trim() || "Custom created quiz",
+            totalTimeSeconds: 900, // Default 15 minutes
+            random: false, // Can be made configurable
+            questions: this.questions.map((q, index) => {
+                const questionId = `q${index + 1}-${q.text.toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 20)}`;
+                
+                return {
+                    id: questionId,
+                    question: q.text.trim(),
+                    imageBase64: q.image && q.image.trim() ? q.image.trim() : "",
+                    possibleAnswers: q.options
+                        .filter(opt => opt.trim()) // Only include non-empty options
+                        .map((option, optIndex) => ({
+                            id: `${questionId}-${String.fromCharCode(97 + optIndex)}`, // q1-a, q1-b, etc.
+                            text: option.trim()
+                        }))
+                };
+            })
+        };
+        
+        // Create answer key (separate file for quiz creator)
+        const answerKey = {
+            quizId: quizId,
+            correctAnswers: {},
+            version: "1.0",
             createdAt: new Date().toISOString()
         };
         
-        console.log('Quiz data ready for saving:', quizData);
-        alert(`Quiz "${quizData.title}" is ready to be saved!\n\nQuestions: ${quizData.questions.length}\n\nCheck the console for the quiz data.`);
+        // Map correct answers to the answer key
+        this.questions.forEach((q, index) => {
+            const questionId = `q${index + 1}-${q.text.toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 20)}`;
+            const correctOptionIndex = q.correctAnswer;
+            if (correctOptionIndex < q.options.filter(opt => opt.trim()).length) {
+                const correctAnswerId = `${questionId}-${String.fromCharCode(97 + correctOptionIndex)}`;
+                answerKey.correctAnswers[questionId] = correctAnswerId;
+            }
+        });
         
-        // TODO: This is where you would implement the actual saving logic
-        // For example: saveQuizToFile(quizData) or sendQuizToServer(quizData)
+        console.log('Quiz data (.quiz format):', JSON.stringify(quizData, null, 2));
+        console.log('Answer key (.json format):', JSON.stringify(answerKey, null, 2));
+        
+        await rpc.request.saveQuizFiles({quiz: JSON.stringify(quizData), answerKey: JSON.stringify(answerKey)});
+        
+        alert(`Quiz "${quizData.name}" has been created!\n\nFiles generated:\n- ${quizData.name.replace(/[^a-z0-9]/gi, '_')}.quiz (for students)\n- ${quizData.name.replace(/[^a-z0-9]/gi, '_')}_answers.key (for instructor)\n\nQuestions: ${quizData.questions.length}\nTime limit: ${Math.floor(quizData.totalTimeSeconds/60)} minutes`);
+        
+        return quizData;
     }
 }
 
@@ -285,4 +326,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Make it globally accessible for debugging
     window.quizCreator = quizCreator;
+    const electrobun = new Electrobun.Electroview({ rpc });
 });
+

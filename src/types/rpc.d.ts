@@ -33,6 +33,10 @@ export type RPCType = {
         params: { results: QuizResults };
         response: { success: boolean };
       };
+      saveQuizFiles: {
+        params: { quiz: Quiz; answerKey: QuizAnswerKey };
+        response: { success: boolean };
+      }
     };
     messages: {};
   }>;
