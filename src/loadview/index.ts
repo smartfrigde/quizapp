@@ -350,6 +350,7 @@ class QuizManager {
           <p>Time Taken: ${Math.round(completionTime / 1000)} seconds</p>
         </div>
         <button class="restart-btn" onclick="window.location.reload()">Take Another Quiz</button>
+        <button class="restart-btn" onclick="window.location.href='views://menuview/index.html'">Back to Menu</button>
       </div>
     `;
   }
@@ -369,10 +370,18 @@ document.head.appendChild(style);
 const quizManager = new QuizManager();
 
 const electrobun = new Electrobun.Electroview({ rpc });
+try {
 await electrobun.rpc!.request.loadQuiz({}).then((result) => {
     console.log("result: ", result);
     
     if (result) {
       quizManager.loadQuiz(result);
+    } else {
+      console.error("Failed to load quiz.");
+      window.location.href = 'views://menuview/index.html';
     }
 });
+} catch (error) {
+    console.error("Error loading quiz:", error);
+    window.location.href = 'views://menuview/index.html';
+}

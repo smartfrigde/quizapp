@@ -34,7 +34,7 @@ export type RPCType = {
         response: { success: boolean };
       };
       saveQuizFiles: {
-        params: { quiz: Quiz; answerKey: QuizAnswerKey };
+        params: { quiz: string; answerKey: string };
         response: { success: boolean };
       }
     };
