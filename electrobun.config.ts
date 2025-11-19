@@ -37,7 +37,7 @@ export default {
             bundleCEF: false,
         },
         win: {
-            bundleCEF: false,
+            bundleCEF: true,
         },
     },
 };
