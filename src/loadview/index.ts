@@ -5,7 +5,7 @@ import { Quiz, QuizQuestion } from "../types/questions";
 console.log("Hello Electrobun view loaded!");
 
 const rpc = Electroview.defineRPC<RPCType>({
-  maxRequestTime: 5000,
+  maxRequestTime: 60000,
   handlers: {
     requests: {}
   }

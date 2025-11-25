@@ -5,7 +5,7 @@ import { QuizResults, QuizAttempt, Quiz, QuizAnswerKey, ProcessedAttempt } from 
 console.log("Quiz Checker loaded!");
 
 const rpc = Electroview.defineRPC<RPCType>({
-  maxRequestTime: 5000,
+  maxRequestTime: 60000,
   handlers: {
     requests: {}
   }
