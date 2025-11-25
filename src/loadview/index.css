@@ -22,6 +22,7 @@ body {
     flex-direction: column;
     gap: 24px;
     animation: fadeInUp 0.5s ease;
+    position: relative;
 }
 
 @keyframes fadeInUp {
@@ -549,4 +550,35 @@ body {
 
 .quiz-shown {
     display: flex !important;
+}
+
+/* Close / Back to menu button in quiz view */
+.close-quiz-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1200;
+    transition: background 0.15s ease, transform 0.08s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.close-quiz-btn:hover {
+    background: rgba(0,0,0,0.75);
+    transform: translateY(-1px);
+}
+
+.close-quiz-btn:active {
+    transform: translateY(0);
 }

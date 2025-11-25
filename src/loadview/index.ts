@@ -31,6 +31,7 @@ class QuizManager {
   private startBtn: HTMLButtonElement;
   private nameError: HTMLElement;
   private displayPlayerName: HTMLElement;
+  private closeBtn: HTMLButtonElement;
 
   constructor() {
     this.questionText = document.getElementById('question-text')!;
@@ -44,6 +45,7 @@ class QuizManager {
     this.startBtn = document.getElementById('startQuizBtn') as HTMLButtonElement;
     this.nameError = document.getElementById('nameError')!;
     this.displayPlayerName = document.getElementById('displayPlayerName')!;
+    this.closeBtn = document.getElementById('closeQuizBtn') as HTMLButtonElement;
 
     this.setupEventListeners();
   }
@@ -52,6 +54,11 @@ class QuizManager {
     // Quiz navigation
     this.prevBtn.addEventListener('click', () => this.previousQuestion());
     this.nextBtn.addEventListener('click', () => this.nextQuestion());
+    
+    // Back to menu / close button
+    if (this.closeBtn) {
+      this.closeBtn.addEventListener('click', () => this.handleBackToMenuClick());
+    }
     
     // Modal events
     this.startBtn.addEventListener('click', () => this.handleStartQuiz());
@@ -70,6 +77,20 @@ class QuizManager {
     setTimeout(() => {
       this.nameInput.focus();
     }, 400);
+  }
+
+  private handleBackToMenuClick(): void {
+    const ok = confirm('Return to menu? Any progress will be lost.');
+    if (!ok) return;
+
+    // stop timer if running
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+
+    // navigate back to menu view
+    window.location.href = 'views://menuview/index.html';
   }
 
   private validateName(): boolean {
