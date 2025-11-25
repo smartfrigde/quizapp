@@ -624,15 +624,16 @@ Click OK to choose a .txt file.`;
                 continue;
             }
 
-            const optMatch = line.match(/^(\*?)([A-Fa-f])\.\s*(.+)$/);
+            // accept leading '*' or '+' (e.g. "*A." or "+D.") and trailing '*' or '+'
+            const optMatch = line.match(/^([*+]?)([A-Fa-f])\.\s*(.+)$/);
             if (optMatch && current) {
-                const [, asterisk, letter, rest] = optMatch;
+                const [, mark, letter, rest] = optMatch;
                 const idx = letter.toUpperCase().charCodeAt(0) - 65;
                 // ensure size
-                while ((current.options!.length - 1) < idx) current.options!.push('');
+                while (current.options!.length <= idx) current.options!.push('');
                 let text = rest.trim();
-                let isCorrect = asterisk === '*';
-                if (text.endsWith('*')) {
+                let isCorrect = mark === '*' || mark === '+';
+                if (text.endsWith('*') || text.endsWith('+')) {
                     text = text.slice(0, -1).trim();
                     isCorrect = true;
                 }
