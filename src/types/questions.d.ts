@@ -38,6 +38,7 @@ export interface QuizAttempt {
     id: string; // unique identifier for this attempt
     quizId: string;
     playerName: string;
+    playerNumber?: number; // optional player number/id
     answers: PlayerAnswer[];
     totalTimeSeconds: number;
     completedAt: string; // ISO timestamp

@@ -32,6 +32,8 @@ class QuizManager {
   private nameError: HTMLElement;
   private displayPlayerName: HTMLElement;
   private closeBtn: HTMLButtonElement;
+  private playerNumberInput!: HTMLInputElement;
+  private playerNumber?: number;
 
   constructor() {
     this.questionText = document.getElementById('question-text')!;
@@ -42,6 +44,7 @@ class QuizManager {
     this.nameModal = document.getElementById('nameModal')!;
     this.quizContainer = document.getElementById('quizContainer')!;
     this.nameInput = document.getElementById('playerName') as HTMLInputElement;
+    this.playerNumberInput = document.getElementById('playerNumber') as HTMLInputElement;
     this.startBtn = document.getElementById('startQuizBtn') as HTMLButtonElement;
     this.nameError = document.getElementById('nameError')!;
     this.displayPlayerName = document.getElementById('displayPlayerName')!;
@@ -67,6 +70,13 @@ class QuizManager {
         this.handleStartQuiz();
       }
     });
+
+    // Optional: allow Enter in playerNumber to submit
+    if (this.playerNumberInput) {
+      this.playerNumberInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.handleStartQuiz();
+      });
+    }
     
     // Real-time validation
     this.nameInput.addEventListener('input', () => {
@@ -115,6 +125,22 @@ class QuizManager {
     return true;
   }
 
+  private validatePlayerNumber(): boolean {
+    const raw = this.playerNumberInput?.value?.trim();
+    if (!raw) {
+      this.playerNumber = undefined;
+      return true; // optional field
+    }
+    const n = parseInt(raw, 10);
+    if (isNaN(n) || n < 1 || n > 99999) {
+      alert('Player number must be a positive integer (1-99999) or left empty.');
+      this.playerNumberInput.focus();
+      return false;
+    }
+    this.playerNumber = n;
+    return true;
+  }
+
   private showNameError(message: string): void {
     this.nameError.textContent = message;
     this.nameError.style.display = 'block';
@@ -134,6 +160,10 @@ class QuizManager {
       return;
     }
 
+    if (!this.validatePlayerNumber()) {
+      return;
+    }
+    
     this.playerName = this.nameInput.value.trim();
     this.displayPlayerName.textContent = this.playerName;
     
@@ -331,7 +361,15 @@ class QuizManager {
       completionTime
     });
 
-    rpc.request.saveQuizAnswers({ quizId: this.quiz!.id, answers: this.selectedAnswers, timeTakenSeconds: Math.round(completionTime / 1000), playerName: this.playerName }).then((response) => {
+    const payload: any = {
+      quizId: this.quiz!.id,
+      answers: this.selectedAnswers,
+      timeTakenSeconds: Math.round(completionTime / 1000),
+      playerName: this.playerName
+    };
+    if (this.playerNumber !== undefined) payload.playerNumber = this.playerNumber;
+
+    rpc.request.saveQuizAnswers(payload).then((response) => {
         if (response.success) {
             console.log("Quiz answers saved successfully.");
         } else {

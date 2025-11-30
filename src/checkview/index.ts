@@ -129,28 +129,49 @@ class QuizChecker {
   }
 
   private displayResults(results: QuizResults): void {
-    this.quizResults = results;
-    
-    // Update quiz info
-    document.getElementById('quizTitle')!.textContent = results.quiz.name;
-    document.getElementById('quizDescription')!.textContent = results.quiz.description;
-    document.getElementById('totalQuestions')!.textContent = `${results.quiz.questions.length} questions`;
-    document.getElementById('totalAttempts')!.textContent = `${results.attempts.length} attempts`;
-    
-    const averageScore = results.attempts.length > 0 
-      ? Math.round(results.attempts.reduce((sum, attempt) => sum + attempt.percentage, 0) / results.attempts.length)
-      : 0;
-    document.getElementById('averageScore')!.textContent = `${averageScore}% average`;
+        this.quizResults = results;
+        
+        // Update quiz info
+        document.getElementById('quizTitle')!.textContent = results.quiz.name;
+        document.getElementById('quizDescription')!.textContent = results.quiz.description;
+        document.getElementById('totalQuestions')!.textContent = `${results.quiz.questions.length} questions`;
+        document.getElementById('totalAttempts')!.textContent = `${results.attempts.length} attempts`;
+        
+        const averageScore = results.attempts.length > 0 
+          ? Math.round(results.attempts.reduce((sum, attempt) => sum + attempt.percentage, 0) / results.attempts.length)
+          : 0;
+        document.getElementById('averageScore')!.textContent = `${averageScore}% average`;
 
-    // Populate players table
-    this.populatePlayersTable(results.attempts);
-    
-    // Generate question analysis
-    this.generateQuestionAnalysis(results);
-    
-    // Show results section
-    this.loadSection.style.display = 'none';
-    this.resultsSection.style.display = 'block';
+        // Sort attempts by playerNumber if present (those with playerNumber come first, ascending).
+        // Fallback: attempts without playerNumber are sorted by playerName.
+        const sortedAttempts = [...results.attempts].sort((a, b) => {
+            const pa = (a as any).playerNumber;
+            const pb = (b as any).playerNumber;
+
+            const hasA = pa !== undefined && pa !== null;
+            const hasB = pb !== undefined && pb !== null;
+
+            if (hasA && hasB) {
+                return Number(pa) - Number(pb);
+            }
+            if (hasA && !hasB) return -1;
+            if (!hasA && hasB) return 1;
+
+            // both missing -> sort by playerName
+            const na = (a.playerName || '').toLowerCase();
+            const nb = (b.playerName || '').toLowerCase();
+            return na.localeCompare(nb);
+        });
+
+        // Populate players table with sorted list
+        this.populatePlayersTable(sortedAttempts);
+        
+        // Generate question analysis (use original results for analytics)
+        this.generateQuestionAnalysis(results);
+        
+        // Show results section
+        this.loadSection.style.display = 'none';
+        this.resultsSection.style.display = 'block';
   }
 
   private populatePlayersTable(attempts: ProcessedAttempt[]): void {
