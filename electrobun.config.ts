@@ -5,6 +5,7 @@ export default {
         version: "0.0.1",
     },
     build: {
+        useAsar: true,
         views: {
             loadview: {
                 entrypoint: "src/loadview/index.ts",

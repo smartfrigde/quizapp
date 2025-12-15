@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "electrobun dev",
     "build": "electrobun build",
+    "build:canary": "electrobun build --env=canary",
     "start": "bun run build && bun run dev"
   },
   "dependencies": {
