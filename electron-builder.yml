@@ -16,6 +16,7 @@ win:
     - nsis
     - zip
 linux:
+  maintainer: "linux@legcord.app"
   target:
     - AppImage
     - deb
