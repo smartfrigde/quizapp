@@ -1,7 +1,9 @@
-build
-node_modules
+node_modules/
+dist/
+dist-electron/
+*.log
 .DS_Store
-.vscode
-.env
-artifacts
-Output
+*.local
+release/
+.cache/
+artifacts/

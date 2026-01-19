@@ -1,0 +1,24 @@
+appId: me.smartfrigde.quiz
+productName: EduQuiz
+directories:
+  output: release
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+mac:
+  category: public.app-category.education
+  target:
+    - zip
+    - dmg
+win:
+  target:
+    - nsis
+    - zip
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+    - zip
+    - tar.gz

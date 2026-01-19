@@ -2,49 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz View</title>
-    <link rel="stylesheet" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - EduQuiz</title>
 </head>
 <body>
-    <!-- Name Input Modal -->
-    <div class="modal-overlay" id="nameModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h2>Welcome to the Quiz!</h2>
-                <p>Please enter your name to begin</p>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="playerName" class="name-input" placeholder="Enter your name..." maxlength="50">
-                <input type="number" id="playerNumber" class="number-input" placeholder="Player number (optional)" min="1" max="99999" />
-                <div class="error-message" id="nameError" style="display: none;">Please enter a valid name</div>
-            </div>
-            <div class="modal-footer">
-                <button class="start-btn" id="startQuizBtn">Start Quiz</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quiz Container (initially hidden) -->
-    <div class="quiz-container" id="quizContainer" style="display: none;">
-        <div class="quiz-header">
-            <div class="player-info">
-                <span class="player-name" id="displayPlayerName"></span>
-            </div>
-        </div>
-        <button id="closeQuizBtn" class="close-quiz-btn" title="Back to menu">×</button>
-        <img class="quiz-image" src="https://via.placeholder.com/350x180?text=Quiz+Image" alt="Quiz Image">
-        <div class="quiz-question" id="question-text">What is the capital of France?</div>
-        <div class="quiz-options" id="options-container">
-            <button class="quiz-option">Berlin</button>
-            <button class="quiz-option">Madrid</button>
-            <button class="quiz-option">Paris</button>
-            <button class="quiz-option">Rome</button>
-        </div>
-        <div class="quiz-nav">
-            <button class="nav-btn" id="prev-btn">Previous</button>
-            <button class="nav-btn" id="next-btn">Next</button>
-        </div>
-    </div>
-    <script src="./index.js" type="module"></script>
+    <div id="root"></div>
+    <script src="./index.tsx" type="module"></script>
 </body>
 </html>
