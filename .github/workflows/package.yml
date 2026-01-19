@@ -53,7 +53,7 @@ jobs:
       - name: Build Electron for MacOS
         if: matrix.os == 'macos-latest'
         run: pnpm electron-builder --universal -m zip dmg
-        env:
+        # env:
           # Add these secrets in GitHub if you want code signing
           # CSC_LINK: ${{ secrets.MACOS_CSC_LINK }}
           # CSC_KEY_PASSWORD: ${{ secrets.MACOS_CSC_KEY_PASSWORD }}
